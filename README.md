@@ -1,13 +1,6 @@
 # 2048
 AP Computer Science Final Project
 
-## How to Play
-
-Run through Eclipse or clone the repository and use:
-```
-$ java bin/Game2048MenuView
-```
-
 ## Game Rules - Singleplayer
 
 1. Shift the tiles in a direction using the arrow keys.
@@ -19,8 +12,16 @@ $ java bin/Game2048MenuView
 ## Game Rules - Multiplayer
 
 1. Shift the tiles in a direction using the arrow keys or WASD.
-2. When a player reaches **512**, they will send a **dead tile** to the other player.
+2. **IN 2 PLAYER MODE, GETTING A 512 TILE WILL SPAWN A DEAD TILE FOR THE OPPONENT**
 3. A player loses when they have no more moves and spaces, and the other player will automatically win.
+4. A player can also win by achieving 2048.
+
+## How to Play
+
+Run through Eclipse or clone the repository and use:
+```
+$ java bin/Game2048MenuView
+```
 
 ## Screenshots
 

@@ -3,6 +3,8 @@ package view;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.GridLayout;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.*;
 
@@ -28,6 +30,25 @@ public class Game2048View extends JFrame {
 		setSize(450, 600);
 		
 		BoardView boardView = new BoardView(game.getBoard());
+		
+		Listener listener = new Listener();
+		add(listener);
+		listener.addKeyListener(new KeyListener() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+            	Board board = game.getBoard();
+            	if(board.doesValueExist((int)Math.pow(NumberTile.base, NumberTile.goalExponent))) {
+            		boardView.clearKeyBindings();
+            		boardView.drawGameOver(true);
+            	}
+            	if(!board.doesMoveExist()) {
+            		boardView.drawGameOver(false);
+            	}
+            }
+
+            public void keyPressed(KeyEvent e) {}
+            public void keyTyped(KeyEvent e) {}
+        });
 		add(boardView);
 	}
 }

@@ -3,6 +3,7 @@ package view;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
 
 import javax.swing.*;
 
@@ -15,7 +16,8 @@ public class BoardView extends JPanel {
 	
 	private Board board;
 	private ScoreView scoreView;
-	private double width;	
+	private double width;
+	private JLabel resultLabel;
 	
 	// MARK: Constructors
 	
@@ -23,30 +25,20 @@ public class BoardView extends JPanel {
 		this.board = board;
 		this.setOpaque(true);
 		this.setBackground(BoardView.backgroundColor);
-		
-		this.addKeyListener(new KeyListener() {
-            @Override
-            public void keyReleased(KeyEvent e) {
-            	if(board.doesValueExist((int)Math.pow(NumberTile.base, NumberTile.goalExponent))) {
-            		System.out.println("You win!");
-            	}
-            	if(!board.doesMoveExist()) {
-            		System.out.println("Game over...");
-            	}
-            }
-
-            public void keyPressed(KeyEvent e) {}
-            public void keyTyped(KeyEvent e) {}
-        });
-		
-		this.setFocusable(true);
-		this.requestFocusInWindow();
-		this.scoreView = new ScoreView(board, 0, 450);
+		setupResultLabel();
+	}
+	
+	private void setupResultLabel() {
+		resultLabel = new JLabel();
+		this.add(resultLabel);
+		resultLabel.setVisible(false);
+		resultLabel.setFont(FontHelper.getDefaultFontOfSize(16));
 	}
 	
 	public BoardView(Board board) {
 		genericInit(board);
 		initKeyBindings();
+		this.scoreView = new ScoreView(board, 0, this.getWidth(), false);
 	}
 	
 	public BoardView(Board board, boolean altKeyBindings) {
@@ -56,6 +48,7 @@ public class BoardView extends JPanel {
 		} else {
 			initKeyBindings();
 		}
+		this.scoreView = new ScoreView(board, 0, 0, altKeyBindings);
 	}
 	
 	// MARK: Key Bindings
@@ -94,6 +87,11 @@ public class BoardView extends JPanel {
 		actionMap.put("RIGHT", new ShiftAction(Board.Direction.RIGHT, board, this));
 	}
 	
+	public void clearKeyBindings() {
+		this.getInputMap().clear();
+		this.getActionMap().clear();
+	}
+	
 	// MARK: Drawing
 	
 	public void paintComponent(Graphics g) {
@@ -106,14 +104,13 @@ public class BoardView extends JPanel {
 		Graphics2D g2d = (Graphics2D)g;
 		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, 
 				 RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
-		
 		g2d.setColor(boardColor);
 		
 		int boardWidth = (int)getSize().getWidth() - 2 * TileView.padding;
-		g2d.fillRoundRect(TileView.padding, TileView.padding, 
+		g2d.fillRoundRect(TileView.padding, 3 * TileView.padding, 
 				boardWidth, boardWidth, 10, 10);
 		
-		scoreView.setY((int)getSize().getWidth() + TileView.padding);
+		scoreView.setY((int)getSize().getWidth() + 2 * TileView.padding);
 		
 		int numRows = board.getNumRows();
 		int numCols = board.getNumCols();
@@ -135,6 +132,12 @@ public class BoardView extends JPanel {
 		tileView.draw(g2d);
 	}
 	
+	public void drawGameOver(boolean won) {
+		String result = "You " + (won ? "win" : "lose") + "!";
+		resultLabel.setText(result);
+		resultLabel.setVisible(true);
+	}
+	
 	private int calculateTileSize() {
 		this.width = getSize().getWidth();
 		
@@ -145,4 +148,5 @@ public class BoardView extends JPanel {
 	public int getWidth() {
 		return (int)getSize().getWidth();
 	}
+	
 }

@@ -16,6 +16,8 @@ public class Board {
 	private Tile[][] tiles;
 	private int scoreTotal;
 	private boolean hasChanged = false;
+	private int deadTileCount;			 // number of dead tiles on the board
+	private int deadThresholdValueCount; // number of 512's
 	
 	// MARK: Constructors
 	
@@ -27,6 +29,8 @@ public class Board {
 		this.numRows = rows;
 		this.numCols = cols;
 		tiles = new Tile[rows][cols];
+		this.deadTileCount = 0;
+		this.deadThresholdValueCount = 0;
 		
 		spawnRandomTile(Board.numberOfStartingTiles);
 		
@@ -170,6 +174,9 @@ public class Board {
 					clumpRow(row, direction); // Re-clump tiles after merge
 					numChanges++;
 					scoreTotal += tile.getValue();
+					if(tile.getValue() == DeadTile.threshold) {
+						deadThresholdValueCount++;
+					}
 				}
 			}
 			break;
@@ -185,6 +192,9 @@ public class Board {
 					clumpRow(row, direction); // Re-clump tiles after merge
 					numChanges++;
 					scoreTotal += tile.getValue();
+					if(tile.getValue() == DeadTile.threshold) {
+						deadThresholdValueCount++;
+					}
 				}
 			}
 			break;
@@ -197,6 +207,7 @@ public class Board {
 	
 	public int collapseColumn(int col, Direction direction) {
 		int numChanges = 0;
+		
 		
 		switch(direction) {
 		case UP:
@@ -211,6 +222,9 @@ public class Board {
 					clumpColumn(row, direction); // Re-clump tiles after merge
 					numChanges++;
 					scoreTotal += tile.getValue();
+					if(tile.getValue() == DeadTile.threshold) {
+						deadThresholdValueCount++;
+					}
 				}
 			}
 			break;
@@ -226,6 +240,9 @@ public class Board {
 					clumpColumn(row, direction); // Re-clump tiles after merge
 					numChanges++;
 					scoreTotal += tile.getValue();
+					if(tile.getValue() == DeadTile.threshold) {
+						deadThresholdValueCount++;
+					}
 				}
 			}
 			break;
@@ -271,7 +288,19 @@ public class Board {
 			throw new IllegalArgumentException("Invalid row and/or column. "
 					+ "Row: " + row + ", Col: " + col);
 		}
-		return tiles[row][col] instanceof NumberTile;
+		return tiles[row][col] instanceof NumberTile || tiles[row][col] instanceof DeadTile;
+	}
+	
+	public int getCountForValue(int value) {
+		int count = 0;
+		for(int row = 0; row < numRows; row++) {
+			for(int col = 0; col < numCols; col++) {
+				if(getValueAtCell(row, col) == value) {
+					count++;
+				}
+			}
+		}
+		return count;
 	}
 	
 	public boolean doesValueExist(int value) {
@@ -297,13 +326,22 @@ public class Board {
 			randomCol = getRandomCol();
 		} while(doesNumberTileExistAtCell(randomRow, randomCol));
 		tiles[randomRow][randomCol] = new NumberTile();
-//		System.out.println("Tile spawned at (" + randomRow + ", " + randomCol + ")");
 	}
 	
 	public void spawnRandomTile(int num) {
 		for(int i = 0; i < num; i++) {
 			spawnRandomTile();
 		}
+	}
+	
+	public void spawnDeadTile() {
+		int randomRow, randomCol;
+		do {
+			randomRow = getRandomRow();
+			randomCol = getRandomCol();
+		} while(doesNumberTileExistAtCell(randomRow, randomCol));
+		tiles[randomRow][randomCol] = new DeadTile();
+		deadTileCount++;
 	}
 	
 	public void swapTiles(int row1, int col1, int row2, int col2) {
@@ -347,6 +385,14 @@ public class Board {
 	
 	public boolean getHasChanged() {
 		return hasChanged;
+	}
+	
+	public int getDeadTileCount() {
+		return deadTileCount;
+	}
+	
+	public int getDeadThresholdValueCount() {
+		return deadThresholdValueCount;
 	}
 	
 	@Override

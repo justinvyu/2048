@@ -18,7 +18,7 @@ public class Tile {
 	}
 	
 	public boolean equals(Tile other) {
-		return this.value == other.value;
+		return (this.value == other.value) && this.value != DeadTile.value;
 	}
 	
 }

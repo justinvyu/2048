@@ -25,7 +25,7 @@ public class TileView {
 	public void draw(Graphics2D g2d) {
 		
 		int x = padding + padding * (1 + col) + col * size;
-		int y = padding + padding * (1 + row) + row * size;
+		int y = 3 * padding + padding * (1 + row) + row * size;
 		
 		int value = tile.getValue();
 		
@@ -34,17 +34,7 @@ public class TileView {
 		g2d.setColor(getColorForTileText(value)); 
 
 		// Displaying Value
-		File fontFile = new File("ClearSans-Bold.ttf");
-		Font font;
-		
-		try {
-			font = Font.createFont(Font.TRUETYPE_FONT, fontFile)
-					   .deriveFont(Font.BOLD, getFontSize(value));
-		} catch(Exception e) {
-			font = new Font("Helvetica", Font.BOLD, getFontSize(value));
-		}
-
-		g2d.setFont(font);
+		g2d.setFont(FontHelper.getDefaultTileFont(value));
 		
 		FontMetrics fm = g2d.getFontMetrics();
 		int textOffset = 10;
@@ -52,7 +42,7 @@ public class TileView {
 	    int xc = (int)(x + size / 2 - rect.getWidth() / 2);
 	    int yc = (int)(y + size / 2 + rect.getHeight() / 2 - textOffset);
 
-		if(value != 0) {
+		if(value > 0) {
 			g2d.drawString(Integer.toString(value), xc, yc);
 		}
 	}
@@ -88,7 +78,7 @@ public class TileView {
 		case 11:
 			return new Color(247, 202, 24);
 		default:
-			return Color.BLACK;
+			return new Color(14, 17, 17);
 		}
 	}
 	
@@ -102,11 +92,6 @@ public class TileView {
 		default:
 			return new Color(249, 246, 242);
 		}
-	}
-	
-	private int getFontSize(int value) {
-		int exponent = (int)(Math.log(value) / Math.log(NumberTile.base));
-		return exponent > 8 ? 35 : 45;
 	}
 	
 }

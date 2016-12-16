@@ -18,11 +18,12 @@ public class ScoreView {
 	private Board board;
 	private int x;
 	private int y;
+	private boolean altKeyBinding;
 	
-	public ScoreView(Board board, int x, int y) {
+	public ScoreView(Board board, int x, int y, boolean altKeyBinding) {
 		this.board = board;
         this.x = x + TileView.padding;
-        this.y = y;
+        this.altKeyBinding = altKeyBinding;
 	}
 	
 	public void setX(int x) {
@@ -34,7 +35,6 @@ public class ScoreView {
 	}
 	
 	public void draw(Graphics g) {	
-		int scoreX = TileView.padding + this.x;
 		String scoreText = "SCORE " + board.getScoreTotal();
 		g.setFont(g.getFont().deriveFont(Font.BOLD, 16));
 		FontMetrics fm = g.getFontMetrics();
@@ -42,14 +42,18 @@ public class ScoreView {
 		
 		g.setColor(BoardView.boardColor);
 		int scoreBackgroundWidth = (int)(2 * TileView.padding + rect.getWidth());
-		g.fillRoundRect(this.x, y - TileView.padding, scoreBackgroundWidth, 
+		g.fillRoundRect(this.x, y, scoreBackgroundWidth, 
 				(int)(TileView.padding + rect.getHeight()), 10, 10);
 		
 		g.setColor(BoardView.backgroundColor);
-		g.drawString(scoreText, scoreX, y + TileView.padding);
+		
+		int scoreX = x + TileView.padding;
+		int scoreY = y + TileView.padding * 2;
+		g.drawString(scoreText, scoreX, scoreY);
 		g.setColor(new Color(119, 110, 101));
 		
-		String instructionText = "HOW TO PLAY: Arrow keys to join tiles.";
-		g.drawString(instructionText, this.x, (int)(this.y + rect.getHeight() + 2 * TileView.padding));
+		String instructionText = altKeyBinding ? "HOW TO PLAY: WASD to join tiles." 
+				: "HOW TO PLAY: Arrow keys to join tiles.";
+		g.drawString(instructionText, this.x, (int)(scoreY + rect.getHeight() + TileView.padding));
 	}
 }

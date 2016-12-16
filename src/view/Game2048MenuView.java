@@ -1,6 +1,7 @@
 package view;
 
 import java.awt.EventQueue;
+import java.awt.GridBagLayout;
 import java.awt.event.*;
 
 import javax.swing.*;
@@ -9,7 +10,6 @@ public class Game2048MenuView extends JFrame implements ActionListener {
 
 	private JButton singlePlayerButton;
 	private JButton multiPlayerButton;
-	private JButton neuralNetButton;
 
 	public Game2048MenuView() {
 		super("2048");
@@ -19,13 +19,9 @@ public class Game2048MenuView extends JFrame implements ActionListener {
 	}
 	
 	public void initGUI() {
-		setSize(500, 500);
+		setSize(200, 100);
 		
 		JPanel panel = new JPanel();
-		add(panel);
-		
-		JLabel label = new JLabel("2048");
-		panel.add(label);
 		
 		singlePlayerButton = new JButton("Classic");
 		panel.add(singlePlayerButton);
@@ -35,9 +31,9 @@ public class Game2048MenuView extends JFrame implements ActionListener {
 		panel.add(multiPlayerButton);
 		multiPlayerButton.addActionListener(this);
 		
-		neuralNetButton = new JButton("Nerual Network");
-		panel.add(neuralNetButton);
-		neuralNetButton.addActionListener(this);
+		JPanel wrapper = new JPanel(new GridBagLayout());
+		wrapper.add(panel);
+		add(wrapper);
 	}
 	
 	public void actionPerformed(ActionEvent e) {
@@ -50,8 +46,6 @@ public class Game2048MenuView extends JFrame implements ActionListener {
 		} else if(source == multiPlayerButton) {
 			System.out.println("Versus");
 			new VersusGame2048View();
-		} else if(source == neuralNetButton) {
-			System.out.println("Neural Network");
 		}
 	}
 	

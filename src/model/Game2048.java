@@ -21,13 +21,5 @@ public class Game2048 {
 	public int getScore() {
 		return board.getScoreTotal();
 	}
-	
-	public void handleKeyEvent(Board.Direction direction) {
-		System.out.println(board);
-		board.spawnRandomTile();
-	
-		System.out.println(board);
-		board.shift(direction);
-	}
 
 }
